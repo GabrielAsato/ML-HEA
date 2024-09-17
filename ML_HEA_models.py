@@ -1,6 +1,9 @@
 '''
 Module for storing ML models for HEA leagues. The data used must be clean, in a format to be received
 by the models and separated between training and testing data.
+
+In order to use this module:
+    from ML_HEA_models import *
 '''
 # ----------------------------------------------------------------------------------------------------
 # Libraries
@@ -95,7 +98,6 @@ def regression_poly_features_regularized(X_train, y_train, X_test, y_test,
                                          deg = 1,
                                          type_regularization = None,
                                          alpha = 1,
-                                         l1_ratio = 0.5,
                                          iter_max = 1000,
                                          plot = True, scale_mms = False,
                                          train_metrics = True, # Trocar isso
@@ -165,6 +167,10 @@ def regression_poly_features_regularized(X_train, y_train, X_test, y_test,
         plot_reglin_model(model, X_train_original, y_train, X_test_original, y_test)
     
     return model, metrics_train, metrics_test
-
 # ----------------------------------------------------------------------------------------------------
-
+'''
+O modelo dentro da função é model. usar .coef_ e .feature_names_in_
+Colocar dentro de um dataframe : df1 = pd.DataFrame(values = abs(model.coef_), index = model.feature_names_in_,
+columns = ["Feature Importance"])
+df1.sort_values(by="Feature importance", ascending=False) # organizar do maior para o menor.
+'''
