@@ -1,0 +1,12 @@
+
+To use the HEA_criteria.py module, use 'from Dados import *'.
+Given a chemical composition of the alloy, it is possible to determine:
+  - the atomic fraction : atomic_percentage(<alloy>),
+  - mixing enthalpy: dHmix(<alloy>), 
+  - difference in atomic radius : atomic_radii(<alloy>),
+  - Pauling electronegativity: electronegativity(<alloy>),
+  - VEC : vec(<alloy>),
+  - mixing entropy: dSmix(<alloy>),
+  - elastic deformation energy: dHel(<alloy>).
+Files 'element_radii_electro_vec.csv', 'Miedema_paired_dHmix.csv', and 'physical_values.csv' contain values taken from the articles
+stored in this folder.
