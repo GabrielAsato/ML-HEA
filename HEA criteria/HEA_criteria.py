@@ -256,7 +256,7 @@ Materialia 5 (2019) 100222. doi: 10.1016/j.mtla.2019.100222
 Dados de Bulk modulus foi retirado de :
 Ref [40] The photographic periodic table of the elements. http://periodictable.com/index.html.
 Atomic volume of the element i, is calculated as : 
-    atomic_volume = molar mass / density
+    atomic_volume = (4/3) * pi() * atomic_radii^3 * 6.02 * 10^23 * 10^-30[m³]
 """
 def dHel(alloy):
 
@@ -267,11 +267,11 @@ def dHel(alloy):
     dr2 = dr2.merge(df2, on="Elementos", how="left")
 
     # V calculation
-    numerator = np.sum(dr2["Atomic_perc"]*dr2["Bulk modulus (GPa)"]*dr2["Atomic volume (cm³/mol)"])
-    denominator = np.sum(dr2["Atomic_perc"]*dr2["Bulk modulus (GPa)"])
+    numerator = np.sum(dr2["Atomic_perc"]*dr2["Bulk modulus (GPa)"]*(10**9)*dr2["Atomic volume"]*(10**-6))
+    denominator = np.sum(dr2["Atomic_perc"]*dr2["Bulk modulus (GPa)"]*(10**9))
     V = numerator/denominator
     # dHel
-    dHel = np.sum(dr2["Atomic_perc"]*dr2["Bulk modulus (GPa)"]*((dr2["Atomic volume (cm³/mol)"]-V)**2)/(2*dr2["Atomic volume (cm³/mol)"]))
+    dHel = np.sum(dr2["Atomic_perc"]*dr2["Bulk modulus (GPa)"]*(10**9)*(((dr2["Atomic volume"]*(10**-6))-V)**2)/(2*(dr2["Atomic volume"]*(10**-6))))
 
-    return dHel
+    return dHel/1000
 #-------------------------------------------------------------------------------------------------------------
