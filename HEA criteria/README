@@ -1,5 +1,5 @@
 
-To use the HEA_criteria.py module, use 'from Dados import *'.
+To use the HEA_criteria.py module, use 'from HEA_criteria import *'.
 Given a chemical composition of the alloy, it is possible to determine:
   - the atomic fraction : atomic_percentage(<alloy>),
   - mixing enthalpy: dHmix(<alloy>), 
