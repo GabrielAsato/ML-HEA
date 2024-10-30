@@ -9,5 +9,6 @@ Given a chemical composition of the alloy, it is possible to determine:
   - mixing entropy: dSmix(<alloy>),
   - elastic deformation energy: dHel(<alloy>).
     - The atomic volume is calculated as: (4/3) * pi() * atomic_radii^3 * 6.02 * 10^23 * 10^-30 [m³]
-Files 'element_radii_electro_vec.csv', 'Miedema_paired_dHmix.csv', and 'physical_values.csv' contain values taken from the articles
-stored in this folder.
+  - Melting temperature: melting_temp(<alloy>)
+Files 'element_radii_electro_vec.csv', 'Miedema_paired_dHmix.csv', 'physical_values.csv' and 'physical_values_temp.csv' contain 
+values taken from the articles stored in this folder.
