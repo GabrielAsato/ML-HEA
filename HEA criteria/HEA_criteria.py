@@ -4,11 +4,12 @@
 """
 Cálculos para o critérios de High Entropy Alloys
 1) Porcentagem atômica.
-2) dHmix
-3) atomic radii
-4) electronegativity
-5) VEC
-6) Elastic-strain energy criterion
+2) dHmix - -15 <= dHmix <= 5 kJ.(mol)^-1 - 10.1016/j.jmrt.2023.01.181
+3) atomic radii - dr <= 6.6 - 10.1038/s41598-023-31461-7
+4) electronegativity - 
+5) VEC - BCC: VEC < 6.87 and FCC > 8. Mixed phases (BCC + FCC) 6.87 < VEC < 8
+6) dSmix - 11 <= dSmix <= 19.5 J/(K.mol)
+7) Elastic-strain energy criterion
 
 Elementos utilizados: 
 elementos = [
@@ -32,10 +33,8 @@ import itertools
 #-------------------------------------------------------------------------------------------------------------
 #### Nomenclatura de liga para porcentagem atômica
 '''
---------------------------------------------------IMPORTANTE!--------------------------------------------------
-Se houver parêntesis, deve começar com este, por exemplo:
-(CoCrCuFeMnNiTiV)88.9Al11.1 - correto
-Al11.1(CoCrCuFeMnNiTiV)88.9 - errado
+                                              ---IMPORTANTE!---
+Evitar usar composição com parêntesis
 '''
 
 # Separar a nomenclatura entre com e sem parêntesis
@@ -274,4 +273,25 @@ def dHel(alloy):
     dHel = np.sum(dr2["Atomic_perc"]*dr2["Bulk modulus (GPa)"]*(10**9)*(((dr2["Atomic volume"]*(10**-6))-V)**2)/(2*(dr2["Atomic volume"]*(10**-6))))
 
     return dHel/1000
+#-------------------------------------------------------------------------------------------------------------
+#### Melting temperature by Rule of Mixture
+"""
+Cabrera et al. Multicomponent alloys design and mechanical response: From high entropy alloys
+to complex concentrated alloys. Materials Science & Engineering R 161 (2024) 100853.
+doi: 10.1016/j.mser.2024.100853
+"""
+def melting_temp(alloy):
+
+    # Tabela com atomic percentage
+    alloy_comp = atomic_percentage(alloy)
+    df1 = pd.DataFrame(alloy_comp.keys(), columns= ["Elementos"])
+    df1['Atomic_perc'] = df1['Elementos'].map(alloy_comp)/100
+
+    # Physical properties - temperature in Kelvin
+    df = pd.read_csv("physical_values_temp.csv")
+    df1 = df1.merge(df, on = "Elementos", how = "left")
+
+    # Melting temperature (Rule of Mixtures)
+    tm = np.sum(df1["Atomic_perc"]*df1["Melting temperature (K)"])
+    return tm
 #-------------------------------------------------------------------------------------------------------------
