@@ -10,6 +10,9 @@ Cálculos para o critérios de High Entropy Alloys
 5) VEC - BCC: VEC < 6.87 and FCC > 8. Mixed phases (BCC + FCC) 6.87 < VEC < 8
 6) dSmix - 11 <= dSmix <= 19.5 J/(K.mol)
 7) Elastic-strain energy criterion
+8) Melting temperature in Kelvin
+9) Ômega parameter - Direto do DataFrame
+10) Density (ROM)
 
 Elementos utilizados: 
 elementos = [
@@ -22,6 +25,7 @@ Outros arquivos:
 - element_radii_electro_vec.csv
 - Miedema_paired_dHmix.csv
 - physical_values.csv
+- physical_values_temp.csv
 """
 
 # Importar bibliotecas
@@ -294,4 +298,37 @@ def melting_temp(alloy):
     # Melting temperature (Rule of Mixtures)
     tm = np.sum(df1["Atomic_perc"]*df1["Melting temperature (K)"])
     return tm
+#-------------------------------------------------------------------------------------------------------------
+#### Ômega parameter
+"""
+Aplicar diretamente como uma função no dataframe.
+omega = abs((tm*dSmix)/(1000*dHmix))
+"""
+#-------------------------------------------------------------------------------------------------------------
+#### Density by Rule of Mixture
+"""
+O.N. Senkov et al. Microstructure and room temperature properties of a high-entropy TaNbHfZrTi alloy. Journal of Alloys and Compounds
+509 (2011) 6043-6048. DOI: 10.1016/j.jallcom.2011.02.171
+
+N.D. Stepanov et al. Structure and mechanical properties of the AlCrxNbTiV (x ¼ 0, 0.5, 1, 1.5) 
+high entropy alloys. Journal of Alloys and Compounds 652 (2015) 266-280. DOI: 10.1016/j.jallcom.2015.08.224.
+
+Dados de atomic weight: http://periodictable.com/index.html
+
+density = sum(Ai.ci)/sum(Ai.ci/density_i)
+"""
+def density(alloy):
+
+    # Tabela com atomic percentage
+    alloy_comp = atomic_percentage(alloy)
+    df1 = pd.DataFrame(alloy_comp.keys(), columns= ["Elementos"])
+    df1['Atomic_perc'] = df1['Elementos'].map(alloy_comp)/100
+
+    # Physical properties
+    df = pd.read_csv("physical_values.csv")
+    df1 = df1.merge(df, on = "Elementos", how = "left")
+
+    # Density (Rule of Mixtures)
+    den = np.sum(df1["Atomic weight"]*df1["Atomic_perc"])/np.sum(df1["Atomic weight"]*df1["Atomic_perc"]/df1["Density (g/cm³)"])
+    return den
 #-------------------------------------------------------------------------------------------------------------
